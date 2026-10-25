@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LankaLaw</title>
+<style>
+  :root {
+    --bg: #f6f5f2; --panel: #ffffff; --ink: #1c1b19; --muted: #6b6861; --line: #e3e0d9;
+    --accent: #8a3b12; --accent-ink: #ffffff; --chip: #f0ece4; --ok: #2f6f3e; --warn: #9a6b00; --err: #a52a2a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #161513; --panel: #1f1e1b; --ink: #ece9e2; --muted: #a39f95; --line: #33312c;
+      --accent: #e0803f; --accent-ink: #161513; --chip: #2a2824; --ok: #7fc48f; --warn: #e2b74a; --err: #e88a8a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #161513; --panel: #1f1e1b; --ink: #ece9e2; --muted: #a39f95; --line: #33312c;
+    --accent: #e0803f; --accent-ink: #161513; --chip: #2a2824; --ok: #7fc48f; --warn: #e2b74a; --err: #e88a8a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Georgia, "Times New Roman", serif; }
+  header { padding: 28px 16px 0; max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 26px; margin: 0; letter-spacing: .2px; }
+  h1 small { font: 13px/1 system-ui, sans-serif; color: var(--muted); margin-left: 10px; }
+  #status { font: 13px system-ui, sans-serif; color: var(--muted); margin-top: 6px; }
+  nav { display: flex; gap: 4px; margin-top: 18px; border-bottom: 1px solid var(--line); }
+  nav button { background: none; color: var(--muted); border: 0; border-bottom: 2px solid transparent; border-radius: 0;
+    padding: 10px 16px; font: 600 14px system-ui, sans-serif; cursor: pointer; margin-bottom: -1px; }
+  nav button.active { color: var(--ink); border-bottom-color: var(--accent); }
+  main { max-width: 960px; margin: 0 auto; padding: 16px 16px 48px; }
+  .tab { display: none; gap: 16px; }
+  .tab.active { display: grid; }
+  form.ask { display: flex; gap: 8px; }
+  textarea, input[type=text], input[type=number] { padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px;
+    background: var(--panel); color: var(--ink); font: inherit; width: 100%; }
+  textarea { resize: vertical; min-height: 68px; }
+  button { padding: 10px 20px; border: 0; border-radius: 10px; background: var(--accent); color: var(--accent-ink);
+    font: 600 15px system-ui, sans-serif; cursor: pointer; }
+  button:disabled { opacity: .55; cursor: wait; }
+  button.ghost { background: var(--chip); color: var(--ink); font-weight: 500; font-size: 13px; padding: 6px 12px; }
+  button.danger { background: transparent; color: var(--err); border: 1px solid var(--line); font-size: 13px; padding: 5px 10px; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .panel h2 { font: 600 12px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0 0 10px; }
+  .panel p.help { font: 13px system-ui, sans-serif; color: var(--muted); margin: -4px 0 12px; }
+  #answer { white-space: pre-wrap; }
+  #answer .cite { font: 600 12px system-ui, sans-serif; color: var(--accent); cursor: pointer; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip { font: 12px system-ui, sans-serif; background: var(--chip); border-radius: 999px; padding: 3px 10px; color: var(--muted); }
+  .chip.warn { color: var(--warn); } .chip.ok { color: var(--ok); }
+  .src { border-top: 1px solid var(--line); padding: 12px 0; }
+  .src:first-of-type { border-top: 0; padding-top: 0; }
+  .src .head { display: flex; justify-content: space-between; gap: 8px; font: 13px system-ui, sans-serif; color: var(--muted); margin-bottom: 4px; }
+  .src .head b { color: var(--ink); }
+  .src .text { font-size: 15px; }
+  .src.hl { background: var(--chip); margin: 0 -20px; padding-left: 20px; padding-right: 20px; }
+  .steps { list-style: none; margin: 0; padding: 0; font: 14px system-ui, sans-serif; }
+  .step { display: grid; grid-template-columns: 28px 1fr; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .step:first-child { border-top: 0; padding-top: 0; }
+  .step .dot { width: 24px; height: 24px; border-radius: 50%; background: var(--chip); color: var(--muted);
+    font: 600 12px system-ui, sans-serif; display: grid; place-items: center; margin-top: 1px; }
+  .step.answer .dot { background: var(--accent); color: var(--accent-ink); }
+  .step .what { color: var(--ink); }
+  .step .what q { font-style: italic; }
+  .step .what code { font: 13px ui-monospace, Consolas, monospace; background: var(--chip); border-radius: 4px; padding: 1px 5px; }
+  .step .hits + .hits { margin-top: 6px; }
+  .chip.live { color: var(--accent); animation: pulse 1.2s ease-in-out infinite; }
+  .chip.bad { color: var(--err); }
+  ul.ents { list-style: none; margin: 0; padding: 0; font: 14px system-ui, sans-serif; max-height: 320px; overflow: auto; }
+  ul.ents li { display: flex; justify-content: space-between; gap: 8px; padding: 6px 8px; border-radius: 6px; cursor: pointer; }
+  ul.ents li:hover, ul.ents li.sel { background: var(--chip); }
+  ul.ents li .t { color: var(--muted); font-size: 12px; }
+  .triples { list-style: none; margin: 8px 0 0; padding: 0; font: 13px system-ui, sans-serif; }
+  .triples li { padding: 3px 0; } .triples .pred { font-weight: 600; color: var(--accent); }
+  .gp { border-top: 1px solid var(--line); padding: 8px 0; font-size: 14px; } .gp .head { font: 12px system-ui, sans-serif; color: var(--muted); }
+  .step.reflect .dot { background: transparent; border: 1px solid var(--line); color: var(--accent); }
+  .step .parts { margin: 6px 0 0; padding: 0; list-style: none; font-size: 13px; }
+  .step .parts li { margin: 3px 0; }
+  .step .parts li .chip { padding: 1px 8px; margin-right: 4px; }
+  .muted { color: var(--muted); font: 14px system-ui, sans-serif; }
+  .cursor { display: inline-block; width: 2px; height: 1em; background: var(--accent); margin-left: 2px; vertical-align: text-bottom; animation: pulse .8s step-end infinite; }
+  @keyframes pulse { 50% { opacity: .35; } }
+  .step .why { color: var(--muted); font-size: 13px; margin-top: 3px; white-space: pre-wrap; }
+  .step .hits { margin-top: 4px; display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+  .step .hits .cite { font: 600 12px system-ui, sans-serif; color: var(--accent); cursor: pointer; }
+  .step .hits .chip { padding: 1px 8px; }
+  .err { color: var(--err); font: 14px system-ui, sans-serif; }
+  .ok-msg { color: var(--ok); font: 14px system-ui, sans-serif; }
+  .examples { display: flex; flex-wrap: wrap; gap: 6px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .grid .full { grid-column: 1 / -1; }
+  label { font: 12px system-ui, sans-serif; color: var(--muted); display: block; margin-bottom: 4px; }
+  .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 10px; }
+  .drop { border: 2px dashed var(--line); border-radius: 10px; padding: 22px; text-align: center; font: 14px system-ui, sans-serif; color: var(--muted); cursor: pointer; }
+  .drop.over { border-color: var(--accent); color: var(--ink); }
+  .drop input { display: none; }
+  ul.files { list-style: none; padding: 0; margin: 10px 0 0; font: 13px system-ui, sans-serif; color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; font: 14px system-ui, sans-serif; }
+  th { text-align: left; font-size: 12px; color: var(--muted); font-weight: 600; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td.num { text-align: right; white-space: nowrap; }
+  td .sub { display: block; color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .hidden { display: none !important; }
+  @media (max-width: 600px) { form.ask { flex-direction: column; } .grid { grid-template-columns: 1fr; } th:nth-child(3), td:nth-child(3) { display: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>LankaLaw <small>Intelligence Engine</small></h1>
+  <div id="status">connecting…</div>
+  <nav>
+    <button data-tab="ask" class="active">Ask</button>
+    <button data-tab="ingest">Ingest</button>
+  </nav>
+</header>
+<main>
+
+  <!-- ============================================================ ASK -->
+  <section class="tab active" id="tab-ask">
+    <form class="ask" id="f">
+      <textarea id="q" placeholder="Ask about Sri Lankan law…" required></textarea>
+      <button id="go" type="submit">Ask</button>
+    </form>
+    <div class="examples" id="ex"></div>
+
+    <section class="panel hidden" id="ans-panel">
+      <h2>Answer</h2>
+      <div id="answer"></div>
+      <div class="meta" id="meta"></div>
+    </section>
+
+    <section class="panel hidden" id="trace-panel">
+      <h2>Agent steps <span class="chip" id="trace-summary"></span></h2>
+      <p class="help">Each numbered step is one call to the model: it either asks the search tool for passages or writes the final answer. After each round of results a reflect step grades which parts of the question are answered and decides whether to search again or answer.</p>
+      <ol class="steps" id="trace"></ol>
+    </section>
+
+    <section class="panel hidden" id="src-panel">
+      <h2>Sources</h2>
+      <div id="sources"></div>
+    </section>
+  </section>
+
+  <!-- ========================================================= INGEST -->
+  <section class="tab" id="tab-ingest">
+    <section class="panel">
+      <h2>Add text</h2>
+      <p class="help">Paste a statute section, judgment extract or note. The source label becomes the citation shown in answers. Re-using a source label replaces the earlier version.</p>
+      <form id="f-text" class="grid">
+        <div class="full"><label for="t-source">Source label *</label><input type="text" id="t-source" placeholder="e.g. Right to Information Act No. 12 of 2016, s. 25" required></div>
+        <div><label for="t-act">Act / instrument</label><input type="text" id="t-act" placeholder="RTI Act"></div>
+        <div><label for="t-year">Year</label><input type="number" id="t-year" placeholder="2016" min="1800" max="2100"></div>
+        <div class="full"><label for="t-topic">Topic</label><input type="text" id="t-topic" placeholder="right to information"></div>
+        <div class="full"><label for="t-text">Text *</label><textarea id="t-text" rows="8" required placeholder="Paste the passage here…"></textarea></div>
+        <div class="full row"><button type="submit" id="t-go">Ingest text</button><span id="t-msg"></span></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Upload files</h2>
+      <p class="help" id="u-help">Allowed: .txt, .md, .pdf. Files are split into overlapping chunks before embedding.</p>
+      <form id="f-files">
+        <label class="drop" id="drop">
+          <input type="file" id="u-files" multiple accept=".txt,.md,.pdf">
+          <span id="drop-text">Drop files here or click to choose</span>
+          <ul class="files" id="u-list"></ul>
+        </label>
+        <div class="grid" style="margin-top:10px">
+          <div><label for="u-source">Source label override (single file only)</label><input type="text" id="u-source" placeholder="defaults to the filename"></div>
+          <div><label for="u-act">Act / instrument</label><input type="text" id="u-act"></div>
+          <div><label for="u-year">Year</label><input type="number" id="u-year" min="1800" max="2100"></div>
+          <div><label for="u-topic">Topic</label><input type="text" id="u-topic"></div>
+        </div>
+        <div class="row"><button type="submit" id="u-go" disabled>Upload &amp; ingest</button><span id="u-msg"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" id="graph-panel">
+      <h2>Knowledge graph <span class="chip" id="graph-stats"></span></h2>
+      <p class="help">Entities and relations extracted from every ingested chunk into the on-premises graph database. The agent uses them to pull in linked passages and to answer "how does X relate to Y" questions. Click an entity to see its relations.</p>
+      <div class="row" style="margin:0 0 10px">
+        <input type="search" id="g-q" placeholder="Find an entity, e.g. Prevention of Terrorism" style="flex:1;min-width:220px">
+        <button type="button" class="ghost" id="g-go">Search</button>
+      </div>
+      <div class="grid">
+        <div><ul class="ents" id="g-ents"></ul></div>
+        <div id="g-detail" class="muted">Select an entity.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Indexed documents <span class="chip" id="doc-count"></span></h2>
+      <div class="row" style="margin:0 0 10px"><button type="button" class="ghost" id="refresh">Refresh</button></div>
+      <table>
+        <thead><tr><th>Source</th><th>Metadata</th><th>Ingested</th><th style="text-align:right">Chunks</th><th></th></tr></thead>
+        <tbody id="docs"></tbody>
+      </table>
+    </section>
+  </section>
+</main>
+
+<script>
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const api = async (url, opts = {}) => {
+  const r = await fetch(url, opts);
+  let body = null; try { body = await r.json(); } catch {}
+  if (!r.ok) throw new Error((body && body.detail) ? (typeof body.detail === "string" ? body.detail : JSON.stringify(body.detail)) : r.statusText);
+  return body;
+};
+
+// ------------------------------------------------------------------ tabs
+document.querySelectorAll("nav button").forEach((b) => b.onclick = () => {
+  document.querySelectorAll("nav button").forEach((x) => x.classList.toggle("active", x === b));
+  document.querySelectorAll(".tab").forEach((t) => t.classList.toggle("active", t.id === "tab-" + b.dataset.tab));
+  if (b.dataset.tab === "ingest") loadDocs();
+  try { localStorage.setItem("lankalaw.tab", b.dataset.tab); } catch {}
+});
+try { const t = localStorage.getItem("lankalaw.tab"); if (t) document.querySelector(`nav button[data-tab="${t}"]`)?.click(); } catch {}
+
+// ---------------------------------------------------------------- status
+async function health() {
+  try {
+    const h = await api("/api/health");
+    const cool = Object.keys(h.cooldowns || {}).length;
+    const graph = h.graph ? ` · graph: ${h.graph.entities} entities, ${h.graph.relations} relations` : "";
+    $("status").textContent = `${h.documents} chunks indexed${graph} · chain: ${h.chain.join(" → ")}` + (cool ? ` · ${cool} model(s) cooling down` : "");
+  } catch { $("status").textContent = "backend unreachable"; }
+}
+health();
+
+// ------------------------------------------------------------------- ask
+const EXAMPLES = [
+  "What does Article 12 of the Constitution guarantee?",
+  "How long can a person be detained under the PTA after the 2022 amendment?",
+  "How long does a public authority have to respond to an RTI request?",
+  "What is the time limit to file a fundamental rights petition?",
+];
+for (const e of EXAMPLES) {
+  const b = document.createElement("button"); b.type = "button"; b.className = "ghost"; b.textContent = e;
+  b.onclick = () => { $("q").value = e; $("f").requestSubmit(); };
+  $("ex").appendChild(b);
+}
+
+function jumpToSource(n) {
+  const s = document.querySelector(`.src[data-n="${n}"]`);
+  if (!s) return; s.scrollIntoView({ behavior: "smooth", block: "center" });
+  s.classList.add("hl"); setTimeout(() => s.classList.remove("hl"), 1600);
+}
+function wireCites(root) { root.querySelectorAll(".cite").forEach((el) => el.onclick = () => jumpToSource(el.dataset.n)); }
+const plural = (n, w) => `${n} ${w}${n === 1 ? "" : "s"}`;
+
+function renderTrace(trace, answer) {
+  const calls = new Set(trace.filter((s) => s.kind !== "reflect").map((s) => s.n)).size;
+  const searches = trace.filter((s) => s.kind === "search").length;
+  const reflects = trace.filter((s) => s.kind === "reflect").length;
+  $("trace-summary").textContent = `${plural(calls, "model call")} · ${plural(searches, "search")}` + (reflects ? ` · ${plural(reflects, "reflection")}` : "");
+  const citeTags = (nums) => nums.map((n) => `<span class="cite" data-n="${n}">[${n}]</span>`).join(" ");
+  $("trace").innerHTML = trace.map((s) => {
+    const model = s.model ? `<span class="chip">${esc(s.provider)} · ${esc(s.model)}</span>` : "";
+    const tokens = s.input_tokens ? `<span class="chip">${s.input_tokens} in / ${s.output_tokens} out tokens</span>` : "";
+    if (s.kind === "search") {
+      const result = s.pending
+        ? `<span class="chip live">searching…</span>`
+        : s.note
+        ? `<span class="chip warn">tool returned: ${esc(s.note)}</span>`
+        : `<span class="chip ok">tool returned ${plural(s.citations.length, "passage")} (${s.new_passages} new)</span> ${citeTags(s.citations)}`;
+      return `<li class="step search"><div class="dot">${s.n}</div><div>
+        <div class="what"><b>Model call ${s.n}</b> → ${s.tool === "explore_knowledge_graph" ? "looked up" : "asked"} <code>${esc(s.tool || "search_knowledge_base")}</code> ${s.tool === "explore_knowledge_graph" ? "for entity" : "for"} <q>${esc(s.query || "")}</q></div>
+        ${s.text ? `<div class="why">Reasoning: ${esc(s.text)}</div>` : ""}
+        <div class="hits">${result}</div>
+        <div class="hits">${model} ${tokens}</div></div></li>`;
+    }
+    if (s.kind === "reflect") {
+      const parts = (s.parts || []).map((p) => `<li><span class="chip ${p.status === "answered" ? "ok" : p.status === "partial" ? "warn" : "bad"}">${esc(p.status)}</span> ${esc(p.part)} ${citeTags(p.citations || [])}</li>`).join("");
+      const decision = s.decision === "search"
+        ? `<span class="chip">decision: search again</span> ${(s.next_queries || []).map((q) => `<span class="chip"><q>${esc(q)}</q></span>`).join(" ")}`
+        : `<span class="chip ok">decision: answer now</span>`;
+      return `<li class="step reflect"><div class="dot">↻</div><div>
+        <div class="what"><b>Reflect</b> → graded the results of call ${s.n}</div>
+        ${s.text ? `<div class="why">${esc(s.text)}</div>` : ""}
+        ${parts ? `<ul class="parts">${parts}</ul>` : ""}
+        <div class="hits">${decision}</div>
+        <div class="hits">${model} ${tokens}</div></div></li>`;
+    }
+    const cited = [...new Set([...(answer || "").matchAll(/\[(\d+)\]/g)].map((m) => Number(m[1])))].sort((a, b) => a - b);
+    const used = cited.length ? `<span class="chip ok">cited ${plural(cited.length, "passage")}</span> ${citeTags(cited)}` : `<span class="chip warn">no citations</span>`;
+    return `<li class="step answer"><div class="dot">${s.n}</div><div>
+      <div class="what"><b>Model call ${s.n}</b> → wrote the final answer</div>
+      <div class="hits">${s.note ? `<span class="chip warn">${esc(s.note)}</span>` : ""} ${used}</div>
+      <div class="hits">${model} ${tokens}</div></div></li>`;
+  }).join("");
+  wireCites($("trace"));
+  $("trace-panel").classList.toggle("hidden", trace.length === 0);
+}
+
+function renderAnswer(d) {
+  $("answer").innerHTML = esc(d.answer).replace(/\[(\d+)\]/g, (_, n) => `<span class="cite" data-n="${n}">[${n}]</span>`);
+  wireCites($("answer"));
+  const chips = [];
+  if (d.model) chips.push(`<span class="chip">${esc(d.provider)} · ${esc(d.model)}</span>`);
+  if (d.fell_back) chips.push(`<span class="chip warn">answered by a fallback model</span>`);
+  if (d.input_tokens) chips.push(`<span class="chip">${d.input_tokens} in / ${d.output_tokens} out tokens</span>`);
+  if (d.steps) chips.push(`<span class="chip">${plural(d.steps, "model call")} · ${plural(d.queries.length, "search")}</span>`);
+  $("meta").innerHTML = chips.join("");
+  $("ans-panel").classList.remove("hidden");
+  renderTrace(d.trace || [], d.answer);
+  renderSources(d.sources);
+}
+
+function renderSources(sources) {
+  $("sources").innerHTML = sources.map((s, i) => `
+    <div class="src" data-n="${i + 1}">
+      <div class="head"><span><b>[${i + 1}]</b> ${esc(s.source)}</span><span>${s.via ? `via ${esc(s.via)}` : `similarity ${s.score.toFixed(3)}`}</span></div>
+      <div class="text">${esc(s.text)}</div>
+    </div>`).join("");
+  $("src-panel").classList.toggle("hidden", sources.length === 0);
+}
+
+// Live view of one /api/ask/stream run. Tokens of the call in progress show in the answer
+// panel; once the call turns out to be a search, that text becomes the step's reasoning.
+function liveRun(question) {
+  const trace = [];          // AgentStepOut[], updated in place as events arrive
+  let liveN = 0, liveText = "";
+  const show = () => {
+    renderTrace(trace, "");
+    $("answer").innerHTML = liveText ? `${esc(liveText)}<span class="cursor"></span>` : `<span class="muted">Model call ${liveN || 1} in progress…</span>`;
+  };
+  return {
+    token(e) { if (e.n !== liveN) { liveN = e.n; liveText = ""; } liveText += e.text; show(); },
+    model(e) {
+      for (const s of e.steps) trace.push(s);
+      if (e.steps.some((s) => s.kind === "search")) liveText = "";  // the text was reasoning, now shown in the step
+      liveN = e.n; show();
+    },
+    tool(e) {
+      const i = trace.findIndex((s) => s.call_id && s.call_id === e.step.call_id);
+      if (i >= 0) trace[i] = { ...e.step, text: trace[i].text }; else trace.push(e.step);
+      renderSources(e.sources); show();
+    },
+    reflect(e) { trace.push(e.step); liveText = ""; show(); },
+    done(e) { renderAnswer(e); },
+    error(e) { throw new Error(e.detail || `error ${e.status}`); },
+  };
+}
+
+async function askStream(question, handlers) {
+  const r = await fetch("/api/ask/stream", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ question }) });
+  if (!r.ok) { let d = {}; try { d = await r.json(); } catch {} throw new Error(d.detail || r.statusText); }
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n\n")) >= 0) {
+      const frame = buf.slice(0, i); buf = buf.slice(i + 2);
+      let ev = "message", data = "";
+      for (const line of frame.split("\n")) {
+        if (line.startsWith("event:")) ev = line.slice(6).trim();
+        else if (line.startsWith("data:")) data += line.slice(5).trim();
+      }
+      if (data && handlers[ev]) handlers[ev](JSON.parse(data));
+    }
+  }
+}
+
+$("f").onsubmit = async (ev) => {
+  ev.preventDefault();
+  const q = $("q").value.trim(); if (!q) return;
+  $("go").disabled = true; $("go").textContent = "Thinking…";
+  $("ans-panel").classList.remove("hidden"); $("answer").innerHTML = `<span class="muted">Starting…</span>`; $("meta").innerHTML = "";
+  $("trace").innerHTML = ""; $("trace-panel").classList.add("hidden"); $("sources").innerHTML = ""; $("src-panel").classList.add("hidden");
+  try {
+    await askStream(q, liveRun(q));
+  } catch (e) {
+    $("answer").innerHTML = `<span class="err">${esc(e.message)}</span>`;
+  } finally { $("go").disabled = false; $("go").textContent = "Ask"; health(); }
+};
+
+// ---------------------------------------------------------------- ingest
+function metaFrom(act, year, topic) {
+  const m = {};
+  if ($(act).value.trim()) m.act = $(act).value.trim();
+  if ($(year).value) m.year = Number($(year).value);
+  if ($(topic).value.trim()) m.topic = $(topic).value.trim();
+  return m;
+}
+function flash(id, text, cls) { const el = $(id); el.textContent = text; el.className = cls; }
+
+api("/api/ingest/settings").then((s) => {
+  $("u-help").textContent = `Allowed: ${s.allowed_extensions.join(", ")} · max ${s.max_upload_mb} MB each · chunks of ${s.chunk_size} chars with ${s.chunk_overlap} overlap.`;
+  $("u-files").accept = s.allowed_extensions.join(",");
+}).catch(() => {});
+
+$("f-text").onsubmit = async (ev) => {
+  ev.preventDefault();
+  $("t-go").disabled = true; flash("t-msg", "Embedding…", "");
+  try {
+    const r = await api("/api/ingest/text", { method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ source: $("t-source").value.trim(), text: $("t-text").value, metadata: metaFrom("t-act", "t-year", "t-topic") }) });
+    const g = r.entities || r.relations ? ` · graph: ${r.entities} entities, ${r.relations} relations${r.graph_errors ? `, ${r.graph_errors} chunk(s) failed extraction` : ""}` : "";
+    flash("t-msg", `${r.replaced ? "Replaced" : "Added"} "${r.source}": ${r.chunks} chunk(s), ${r.chars} chars${g}`, "ok-msg");
+    $("t-text").value = ""; loadDocs(); loadGraph(); health();
+  } catch (e) { flash("t-msg", e.message, "err"); }
+  finally { $("t-go").disabled = false; }
+};
+
+// file picking + drag/drop
+let picked = [];
+function showPicked() {
+  $("u-list").innerHTML = picked.map((f) => `<li>${esc(f.name)} · ${(f.size / 1024).toFixed(0)} KB</li>`).join("");
+  $("drop-text").textContent = picked.length ? `${picked.length} file(s) selected` : "Drop files here or click to choose";
+  $("u-go").disabled = picked.length === 0;
+  $("u-source").disabled = picked.length !== 1;
+}
+$("u-files").onchange = (e) => { picked = [...e.target.files]; showPicked(); };
+const drop = $("drop");
+["dragenter", "dragover"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach((t) => drop.addEventListener(t, (e) => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", (e) => { picked = [...e.dataTransfer.files]; showPicked(); });
+
+$("f-files").onsubmit = async (ev) => {
+  ev.preventDefault();
+  if (!picked.length) return;
+  $("u-go").disabled = true; flash("u-msg", `Uploading ${picked.length} file(s)…`, "");
+  const fd = new FormData();
+  picked.forEach((f) => fd.append("files", f));
+  if (picked.length === 1 && $("u-source").value.trim()) fd.append("source", $("u-source").value.trim());
+  fd.append("metadata", JSON.stringify(metaFrom("u-act", "u-year", "u-topic")));
+  try {
+    const r = await api("/api/ingest/files", { method: "POST", body: fd });
+    const ok = r.results.map((x) => `${x.source} (${x.chunks} chunks${x.replaced ? ", replaced" : ""})`).join("; ");
+    const bad = r.errors.map((x) => `${x.filename}: ${x.error}`).join("; ");
+    flash("u-msg", [ok && `Ingested ${ok}`, bad && `Failed ${bad}`].filter(Boolean).join(" · "), bad ? "err" : "ok-msg");
+    picked = []; $("u-files").value = ""; showPicked(); loadDocs(); loadGraph(); health();
+  } catch (e) { flash("u-msg", e.message, "err"); $("u-go").disabled = false; }
+};
+
+// documents table
+async function loadDocs() {
+  try {
+    const d = await api("/api/ingest/documents");
+    $("doc-count").textContent = `${d.documents.length} docs · ${d.total_chunks} chunks`;
+    $("docs").innerHTML = d.documents.map((x) => `
+      <tr>
+        <td>${esc(x.source)}<span class="sub">${esc(x.doc_id)}</span></td>
+        <td>${Object.entries(x.metadata).filter(([k]) => k !== "filename").map(([k, v]) => `<span class="chip">${esc(k)}: ${esc(v)}</span>`).join(" ")}</td>
+        <td>${x.ingested_at ? esc(x.ingested_at.replace("T", " ").replace("+00:00", " UTC")) : ""}</td>
+        <td class="num">${x.chunks}</td>
+        <td><button type="button" class="danger" data-id="${esc(x.doc_id)}" data-src="${esc(x.source)}">Delete</button></td>
+      </tr>`).join("") || `<tr><td colspan="5" style="color:var(--muted)">Nothing indexed yet.</td></tr>`;
+    $("docs").querySelectorAll("button.danger").forEach((b) => b.onclick = async () => {
+      if (!confirm(`Delete "${b.dataset.src}" and all its chunks?`)) return;
+      try { await api(`/api/ingest/documents/${encodeURIComponent(b.dataset.id)}`, { method: "DELETE" }); loadDocs(); loadGraph(); health(); }
+      catch (e) { alert(e.message); }
+    });
+  } catch (e) { $("docs").innerHTML = `<tr><td colspan="5" class="err">${esc(e.message)}</td></tr>`; }
+}
+$("refresh").onclick = () => { loadDocs(); loadGraph(); };
+
+// knowledge graph browser
+async function loadGraph(q) {
+  try {
+    const d = await api(`/api/graph/entities?limit=40${q ? `&q=${encodeURIComponent(q)}` : ""}`);
+    const s = d.stats;
+    $("graph-stats").textContent = `${s.entities} entities · ${s.relations} relations · ${s.chunks} chunks`;
+    $("g-ents").innerHTML = d.entities.map((e) => `<li data-key="${esc(e.key)}"><span>${esc(e.label)} <span class="t">${esc(e.type)}</span></span><span class="t">${e.mentions}</span></li>`).join("")
+      || `<li class="muted">${q ? "No entity matches." : "Nothing extracted yet."}</li>`;
+    $("g-ents").querySelectorAll("li[data-key]").forEach((li) => li.onclick = () => showEntity(li.dataset.key, li));
+  } catch (e) {
+    $("graph-panel").querySelector(".help").textContent = e.message; $("graph-stats").textContent = "off";
+    $("g-ents").innerHTML = ""; $("g-detail").textContent = "";
+  }
+}
+async function showEntity(key, li) {
+  $("g-ents").querySelectorAll("li").forEach((x) => x.classList.toggle("sel", x === li));
+  $("g-detail").innerHTML = `<span class="muted">Loading…</span>`;
+  try {
+    const d = await api(`/api/graph/entities/${encodeURIComponent(key)}`);
+    const e = d.entities[0];
+    const triples = d.triples.map((t) => `<li>${esc(t.subject)} <span class="pred">${esc(t.predicate)}</span> ${esc(t.object)}</li>`).join("") || `<li class="muted">No relations recorded.</li>`;
+    const passages = d.passages.map((p) => `<div class="gp"><div class="head">${esc(p.source)} · chunk ${p.chunk_index}</div>${esc(p.text.slice(0, 400))}${p.text.length > 400 ? "…" : ""}</div>`).join("");
+    $("g-detail").innerHTML = `<div><b>${esc(e.label)}</b> <span class="chip">${esc(e.type)}</span> <span class="chip">${plural(e.mentions, "passage")}</span></div>
+      <ul class="triples">${triples}</ul>
+      <div style="margin-top:10px;font:600 12px system-ui,sans-serif;color:var(--muted);text-transform:uppercase;letter-spacing:.08em">Passages</div>${passages}`;
+  } catch (err) { $("g-detail").innerHTML = `<span class="err">${esc(err.message)}</span>`; }
+}
+$("g-go").onclick = () => loadGraph($("g-q").value.trim());
+$("g-q").onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); loadGraph($("g-q").value.trim()); } };
+
+document.querySelector('nav button[data-tab="ingest"]').addEventListener("click", () => loadGraph());
+if ($("tab-ingest").classList.contains("active")) { loadDocs(); loadGraph(); }
+</script>
+</body>
+</html>

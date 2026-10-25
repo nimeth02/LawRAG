@@ -1,0 +1,62 @@
+[
+  {
+    "id": "const-art-12",
+    "text": "Article 12 of the Constitution of Sri Lanka (1978): (1) All persons are equal before the law and are entitled to the equal protection of the law. (2) No citizen shall be discriminated against on the grounds of race, religion, language, caste, sex, political opinion, place of birth or any one of such grounds. (3) No person shall, on the grounds of race, religion, language, caste, sex or any one of such grounds, be subject to any disability, liability, restriction or condition with regard to access to shops, public restaurants, hotels, places of public entertainment and places of public worship of his own religion. (4) Nothing in this Article shall prevent special provision being made, by law, subordinate legislation or executive action, for the advancement of women, children or disabled persons.",
+    "metadata": {"source": "Constitution of Sri Lanka, Article 12", "act": "Constitution", "year": 1978, "topic": "fundamental rights"}
+  },
+  {
+    "id": "const-art-14",
+    "text": "Article 14(1) of the Constitution guarantees to every citizen the freedom of speech and expression including publication; the freedom of peaceful assembly; the freedom of association; the freedom to form and join a trade union; the freedom to manifest religion or belief in worship, observance, practice and teaching; the freedom to enjoy and promote one's own culture and language; the freedom to engage in any lawful occupation, profession, trade, business or enterprise; the freedom of movement and of choosing one's residence within Sri Lanka; and the freedom to return to Sri Lanka. Article 15 permits restrictions on these freedoms as prescribed by law in the interests of, among others, national security, public order and racial and religious harmony.",
+    "metadata": {"source": "Constitution of Sri Lanka, Articles 14-15", "act": "Constitution", "year": 1978, "topic": "fundamental rights"}
+  },
+  {
+    "id": "const-art-126",
+    "text": "Article 126 of the Constitution gives the Supreme Court sole and exclusive jurisdiction to hear and determine any question relating to the infringement or imminent infringement by executive or administrative action of any fundamental right or language right declared and recognised by Chapter III or Chapter IV. A person alleging such infringement may apply to the Supreme Court by way of petition in writing within one month of the alleged infringement. The Supreme Court must hear and finally dispose of the petition within two months of its filing.",
+    "metadata": {"source": "Constitution of Sri Lanka, Article 126", "act": "Constitution", "year": 1978, "topic": "fundamental rights procedure"}
+  },
+  {
+    "id": "pta-1979-s9",
+    "text": "The Prevention of Terrorism (Temporary Provisions) Act No. 48 of 1979 (PTA) allows the Minister, where there is reason to believe that a person is connected with unlawful activity, to order that person to be detained. Under the original section 9, a detention order could be made for a period not exceeding three months at a time, extendable by further periods of up to three months each, for a total period not exceeding eighteen months.",
+    "metadata": {"source": "Prevention of Terrorism Act No. 48 of 1979, s. 9", "act": "PTA", "year": 1979, "topic": "detention"}
+  },
+  {
+    "id": "pta-amend-2022",
+    "text": "The Prevention of Terrorism (Temporary Provisions) (Amendment) Act No. 12 of 2022 amended the PTA. Key changes: the maximum period of detention under a detention order was reduced from eighteen months to twelve months; magistrates were empowered to visit places of detention; detainees were given the right to communicate with and be visited by relatives and legal counsel; and the offence of causing religious, racial or communal disharmony under section 2(1)(h) was repealed. Section 14, which permitted restrictions on publications, was also repealed.",
+    "metadata": {"source": "Prevention of Terrorism (Amendment) Act No. 12 of 2022", "act": "PTA", "year": 2022, "topic": "detention"}
+  },
+  {
+    "id": "rti-2016-s25",
+    "text": "Under the Right to Information Act No. 12 of 2016, a public authority must respond to a request for information as expeditiously as possible and in any case within fourteen working days of receipt. Where the information concerns the life and personal liberty of a citizen, the response must be given within forty-eight hours. The fourteen-day period may be extended by a further twenty-one days where the request involves a large number of records or consultation with third parties, with written notice of the extension to the requester.",
+    "metadata": {"source": "Right to Information Act No. 12 of 2016, s. 25", "act": "RTI Act", "year": 2016, "topic": "right to information"}
+  },
+  {
+    "id": "rti-2016-exemptions",
+    "text": "Section 5 of the Right to Information Act No. 12 of 2016 sets out the grounds on which a public authority may refuse information, including where disclosure would cause an unwarranted invasion of personal privacy, would undermine the defence of the State or territorial integrity or national security, would cause serious prejudice to the economy, or would reveal information covered by legal professional privilege. Even where an exemption applies, information must be released where the public interest in disclosure outweighs the harm.",
+    "metadata": {"source": "Right to Information Act No. 12 of 2016, s. 5", "act": "RTI Act", "year": 2016, "topic": "right to information"}
+  },
+  {
+    "id": "online-safety-2024",
+    "text": "The Online Safety Act No. 9 of 2024 established the Online Safety Commission with power to issue directives to persons who communicate prohibited statements online and to require internet service providers and intermediaries to disable access to such content. The Act creates offences for communicating false statements of fact that threaten national security, public health or public order, and for online cheating and child abuse content. Penalties include imprisonment and fines, with higher penalties for repeat offences.",
+    "metadata": {"source": "Online Safety Act No. 9 of 2024", "act": "Online Safety Act", "year": 2024, "topic": "online regulation"}
+  },
+  {
+    "id": "companies-2007-s4",
+    "text": "The Companies Act No. 7 of 2007 governs the incorporation and regulation of companies in Sri Lanka. A company may be incorporated as a private company, a public company, a company limited by guarantee, or an unlimited company. A private company may not have more than fifty shareholders and must restrict the right to transfer its shares in its articles. Every company must have a registered office in Sri Lanka and must file an annual return with the Registrar General of Companies.",
+    "metadata": {"source": "Companies Act No. 7 of 2007", "act": "Companies Act", "year": 2007, "topic": "company law"}
+  },
+  {
+    "id": "computer-crime-2007",
+    "text": "The Computer Crime Act No. 24 of 2007 criminalises unauthorised access to a computer, unauthorised access with intent to commit an offence, causing a computer to perform a function without lawful authority, unauthorised modification or damage to data, and offences against national security committed through a computer. The Act applies where the offender, the computer or the damage is in Sri Lanka, and provides for experts to assist police investigations and for the preservation of evidence.",
+    "metadata": {"source": "Computer Crime Act No. 24 of 2007", "act": "Computer Crime Act", "year": 2007, "topic": "cyber law"}
+  },
+  {
+    "id": "consumer-affairs-2003",
+    "text": "The Consumer Affairs Authority Act No. 9 of 2003 established the Consumer Affairs Authority to protect consumers against unfair trade practices, to promote competitive pricing, and to ensure the quality and safety of goods and services. The Authority may issue directions to traders on price marking, labelling and standards, may fix maximum retail prices for specified goods, and may inquire into complaints from consumers. A consumer complaint must generally be made within three months of the purchase.",
+    "metadata": {"source": "Consumer Affairs Authority Act No. 9 of 2003", "act": "CAA Act", "year": 2003, "topic": "consumer protection"}
+  },
+  {
+    "id": "pdpa-2022",
+    "text": "The Personal Data Protection Act No. 9 of 2022 is Sri Lanka's first comprehensive data protection law. It applies to the processing of personal data by controllers and processors in Sri Lanka and to those offering goods or services to persons in Sri Lanka. Data subjects have rights of access, rectification, erasure and objection. Controllers must process data lawfully, limit processing to specified purposes, implement data protection management programmes, and in some cases appoint a data protection officer. The Data Protection Authority enforces the Act and may impose penalties of up to ten million rupees.",
+    "metadata": {"source": "Personal Data Protection Act No. 9 of 2022", "act": "PDPA", "year": 2022, "topic": "data protection"}
+  }
+]
